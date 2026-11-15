@@ -1,0 +1,44 @@
+@host = http://localhost:5090
+
+### List books (filter, stable title order, paging)
+GET {{host}}/api/books?page=1&pageSize=10
+Accept: application/json
+
+### Group books by category
+GET {{host}}/api/books/by-category
+Accept: application/json
+
+### Overdue loans still out
+GET {{host}}/api/loans/overdue-summary
+Accept: application/json
+
+### Unpaid fine totals
+GET {{host}}/api/fines/totals
+Accept: application/json
+
+### Checkout The Hobbit (book 2) to Ada Lovelace (patron 1)
+POST {{host}}/api/loans
+Content-Type: application/json
+
+{
+  "patronId": 1,
+  "bookId": 2
+}
+
+### Grace Hopper (patron 2) is blocked by an unpaid fine
+POST {{host}}/api/loans
+Content-Type: application/json
+
+{
+  "patronId": 2,
+  "bookId": 2
+}
+
+### Alan Turing (patron 3) is inactive
+POST {{host}}/api/loans
+Content-Type: application/json
+
+{
+  "patronId": 3,
+  "bookId": 2
+}
