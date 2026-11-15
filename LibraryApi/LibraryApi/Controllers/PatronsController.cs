@@ -37,23 +37,24 @@ public sealed class PatronsController(LibraryDbContext db) : ControllerBase
     public async Task<ActionResult> Get(int id, CancellationToken token)
     {
         var patron = await db.Patrons
-            .Include(item => item.Loans)
-            .ThenInclude(loan => loan.Fines)
-            .FirstOrDefaultAsync(item => item.Id == id, token);
+        .AsNoTracking()
+        .Where(item => item.Id == id)
+        .Select(item => new PatronResponse(
+            item.Id,
+            item.StudentNumber,
+            item.FullName,
+            item.Email,
+            item.IsActive,
+            item.Loans.Count(loan => loan.ReturnedAt == null),
+            item.Loans.SelectMany(loan => loan.Fines)
+                .Where(fine => !fine.IsPaid)
+                .Sum(fine => (decimal?)fine.Amount) ?? 0m))
+        .FirstOrDefaultAsync(token);
 
-        if (patron is null)
-            return ApiProblems.Make(this, StatusCodes.Status404NotFound, "Patron not found.");
+        return patron is null
+        ? ApiProblems.Make(this, StatusCodes.Status404NotFound, "Patron not found.")
+        : Ok(patron);
 
-        var openLoans = patron.Loans.Count(loan => loan.ReturnedAt is null);
-        var unpaid = patron.Loans.SelectMany(loan => loan.Fines).Where(fine => !fine.IsPaid).Sum(fine => fine.Amount);
-        return Ok(new PatronResponse(
-            patron.Id,
-            patron.StudentNumber,
-            patron.FullName,
-            patron.Email,
-            patron.IsActive,
-            openLoans,
-            unpaid));
     }
 
     [HttpPost]

@@ -1,5 +1,6 @@
 using LibraryApi.Contracts;
 using LibraryApi.Data;
+using LibraryApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,16 +14,12 @@ public sealed class FinesController(LibraryDbContext db) : ControllerBase
     public async Task<ActionResult> List(bool unpaidOnly = false, CancellationToken token = default)
     {
 
-
-        var fines = await db.Fines
-            .Include(fine => fine.Loan)
-            .ThenInclude(loan => loan.Patron)
-            .ToListAsync(token);
+        IQueryable<Fine> query = db.Fines.AsNoTracking();
 
         if (unpaidOnly)
-            fines = fines.Where(fine => !fine.IsPaid).ToList();
+            query = query.Where(query => !query.IsPaid);
 
-        var response = fines
+        var response = query
             .OrderBy(fine => fine.Loan.Patron.FullName)
             .ThenBy(fine => fine.Id)
             .Select(fine => new FineResponse(
@@ -41,12 +38,8 @@ public sealed class FinesController(LibraryDbContext db) : ControllerBase
     [HttpGet("totals")]
     public async Task<ActionResult> Totals(CancellationToken token)
     {
-        var fines = await db.Fines
-            .Include(fine => fine.Loan)
-            .ThenInclude(loan => loan.Patron)
-            .ToListAsync(token);
-
-        var totals = fines
+        var totals = await db.Fines
+            .AsNoTracking()
             .Where(fine => !fine.IsPaid)
             .GroupBy(fine => new { fine.Loan.PatronId, fine.Loan.Patron.FullName })
             .Select(group => new FineTotalResponse(
@@ -54,7 +47,7 @@ public sealed class FinesController(LibraryDbContext db) : ControllerBase
                 group.Key.FullName,
                 group.Sum(fine => fine.Amount)))
             .OrderBy(total => total.PatronName)
-            .ToList();
+            .ToListAsync(token);
 
         return Ok(totals);
     }

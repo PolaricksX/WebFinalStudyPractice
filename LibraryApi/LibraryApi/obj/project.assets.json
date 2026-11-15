@@ -566,11 +566,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Leena\\Documents\\School Work\\Web Programming\\LibraryApi\\LibraryApi\\LibraryApi.csproj",
+      "projectUniqueName": "C:\\Users\\Leena\\Documents\\School Work\\Web Programming\\WebFinalStudyPractice\\LibraryApi\\LibraryApi\\LibraryApi.csproj",
       "projectName": "LibraryApi",
-      "projectPath": "C:\\Users\\Leena\\Documents\\School Work\\Web Programming\\LibraryApi\\LibraryApi\\LibraryApi.csproj",
+      "projectPath": "C:\\Users\\Leena\\Documents\\School Work\\Web Programming\\WebFinalStudyPractice\\LibraryApi\\LibraryApi\\LibraryApi.csproj",
       "packagesPath": "C:\\Users\\Leena\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Leena\\Documents\\School Work\\Web Programming\\LibraryApi\\LibraryApi\\obj\\",
+      "outputPath": "C:\\Users\\Leena\\Documents\\School Work\\Web Programming\\WebFinalStudyPractice\\LibraryApi\\LibraryApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

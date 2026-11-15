@@ -25,13 +25,14 @@ public sealed class CategoriesController(LibraryDbContext db) : ControllerBase
     public async Task<ActionResult> Get(int id, CancellationToken token)
     {
         var category = await db.Categories
-            .Include(item => item.Books)
-            .FirstOrDefaultAsync(item => item.Id == id, token);
+            .AsNoTracking()
+            .Where(item => item.Id == id)
+            .Select(item => new CategoryResponse(item.Id, item.Name, item.Books.Count))
+            .FirstOrDefaultAsync(token);
 
-        if (category is null)
-            return ApiProblems.Make(this, StatusCodes.Status404NotFound, "Category not found.");
-
-        return Ok(new CategoryResponse(category.Id, category.Name, category.Books.Count));
+        return category is null
+            ? ApiProblems.Make(this, StatusCodes.Status404NotFound, "Category not found.")
+            : Ok(category);
     }
 
     [HttpPost]

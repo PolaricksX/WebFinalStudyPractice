@@ -67,22 +67,21 @@ public sealed class BooksController(LibraryDbContext db) : ControllerBase
     public async Task<ActionResult> Get(int id, CancellationToken token)
     {
         var book = await db.Books
-            .Include(item => item.Category)
-            .Include(item => item.Copies)
-            .FirstOrDefaultAsync(item => item.Id == id, token);
+            .AsNoTracking()
+            .Where(item => item.Id == id)
+            .Select(item => new BookListItemResponse(
+             item.Id,
+             item.Title,
+             item.Isbn,
+             item.PublishedYear,
+             item.CategoryId,
+             item.Category.Name,
+             item.Copies.Count(copy => copy.Status == CopyStatus.Available)))
+        .FirstOrDefaultAsync(token);
 
-        if (book is null)
-            return ApiProblems.Make(this, StatusCodes.Status404NotFound, "Book not found.");
-
-        var available = book.Copies.Count(copy => copy.Status == CopyStatus.Available);
-        return Ok(new BookListItemResponse(
-            book.Id,
-            book.Title,
-            book.Isbn,
-            book.PublishedYear,
-            book.CategoryId,
-            book.Category.Name,
-            available));
+        return book is null
+                ? ApiProblems.Make(this, StatusCodes.Status404NotFound, "Book not found.")
+                : Ok(book);
     }
 
     [HttpPost]
