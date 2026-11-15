@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "6kf0/Ku4A5Q=",
+  "dgSpecHash": "HlOM8IgOPYM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Leena\\Documents\\School Work\\Web Programming\\LibraryApi\\LibraryApi\\LibraryApi.csproj",
+  "projectFilePath": "C:\\Users\\Leena\\Documents\\School Work\\Web Programming\\WebFinalStudyPractice\\LibraryApi\\LibraryApi\\LibraryApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Leena\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.12\\microsoft.aspnetcore.openapi.10.0.12.nupkg.sha512",
     "C:\\Users\\Leena\\.nuget\\packages\\microsoft.data.sqlite.core\\10.0.12\\microsoft.data.sqlite.core.10.0.12.nupkg.sha512",
